@@ -1,0 +1,1386 @@
+-- MIB Module Name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+GP-MIB DEFINITIONS ::= BEGIN
+
+-- Imported Items ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORTS
+        enterprises, IpAddress, TimeTicks, OBJECT-TYPE, mib-2,
+                MODULE-IDENTITY, NOTIFICATION-TYPE,
+                OBJECT-IDENTITY, Integer32, Counter32
+            FROM SNMPv2-SMI
+
+        TEXTUAL-CONVENTION
+            FROM SNMPv2-TC;
+
+gpMibModule MODULE-IDENTITY
+    LAST-UPDATED "201610151700Z"
+    ORGANIZATION "PT. Sinergi Teknologi Utama"
+    CONTACT-INFO "Asep Maryana - asep.maryana@sinergiteknologi.com"
+    DESCRIPTION "MIB information for GP Rectifier System"
+  ::= { mib-2 1 }
+
+-- Type Assignments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Signed8 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -128..127 )
+
+Signed16 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -32768..32767 )
+
+Signed32 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -2147483648..2147483647 )
+
+Unsigned8 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( 0..255 )
+
+Unsigned16 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( 0..65535 )
+
+Unsigned31 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( 0..2147483646 )
+
+UnsignedNAN8 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX INTEGER { notAvailable(255) }
+
+UnsignedNAN16 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX INTEGER { notAvailable(65535) }
+
+UnsignedNAN32 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Counter32
+
+Boolean ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX INTEGER { false(0), true(1) }
+
+Float ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -2147483648..2147483647 )
+
+No-Data ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX OCTET STRING(SIZE(0))
+
+TimeIntervalInSeconds ::= TimeTicks
+
+TimeIntervalInMinutes ::= Unsigned31
+
+TimeIntervalInDays ::= Unsigned31
+
+DC-Power ::= UnsignedNAN16
+
+Percentile8NAN ::= UnsignedNAN8
+
+Slave-Type ::= INTEGER {
+  undefined(0),
+  sm20(1),
+  sm50(2),
+  sm30(3),
+  sm30-SLAVE(4),
+  iom(5),
+  cbc(6),
+  weir(7),
+  sm35(8),
+  nes-BATTERY-TRAY(9),
+  sm30-SLAVE-FRONT-PORT(10),
+  sm60(11),
+  sm40(12),
+  sm70-IOB(13),
+  sm70(14),
+  sm45-IOB(15),
+  sm45(16),
+  sm65(17),
+  sc200(18)
+}
+
+Access-Level ::= INTEGER {
+  read-Only(80),
+  read-Write(81)
+}
+
+Enable-State ::= INTEGER {
+  disabled(0),
+  enabled(1)
+}
+
+SNMP-Access-State ::= INTEGER {
+  disabled(0),
+  all(1),
+  read-Only(2),
+  v3-Only(3)
+}
+
+Alarm-Report ::= INTEGER {
+  none(0),
+  warnings-And-Above(1),
+  minor-And-Above(2),
+  major-And-Above(3),
+  critical-Only(4)
+}
+
+Severity-Level ::= INTEGER {
+  warnings-And-Above(1),
+  minor-And-Above(2),
+  major-And-Above(3),
+  none(4),
+  critical-Only(5)
+}
+
+SNMP-Trap-Format ::= INTEGER {
+  eaton(0),
+  x733(1)
+}
+
+SNMP-Trap-Version ::= INTEGER {
+  snmp-V1-Trap(0),
+  snmp-V2-Trap(1),
+  snmp-V3-Trap(2)
+}
+
+Access-Protection ::= INTEGER {
+  unprotected(0),
+  read-Only(1),
+  pin-Protected(2)
+}
+
+Can-Start ::= INTEGER {
+  started(190),
+  can-Start(191),
+  busy(192),
+  disabled(193),
+  alarms-Active(194),
+  sensor-Failed(195),
+  battery-Not-Charged(196),
+  no-Rectifiers-Available(197),
+  rectifier-OVSD(198),
+  no-Battery-Configured(199),
+  load-Current-Too-Low(200),
+  ac-Failed(201),
+  manual-Stop(202),
+  battery-Not-Discharged(203),
+  ac-State-Unavailable(204),
+  system-Overloaded(205)
+}
+
+AVC-State ::= INTEGER {
+  disabled(115),
+  inoperative(116),
+  active(117),
+  lost-Control(118),
+  in-Deadband(119)
+}
+
+TC-State ::= INTEGER {
+  disabled(80),
+  inoperative(81),
+  active(82)
+}
+
+Battery-Test-State ::= INTEGER {
+  disabled(95),
+  inactive(96),
+  active(97),
+  failed(98),
+  locked-Out(99)
+}
+
+Battery-Charge-State ::= INTEGER {
+  float(100),
+  discharge(101),
+  charge(102),
+  unavailable(103)
+}
+
+BCL-State ::= INTEGER {
+  disabled(110),
+  inoperative(111),
+  active(112),
+  inactive(113),
+  lost-Control(114),
+  in-Deadband(115),
+  pending(116)
+}
+
+Engine-Run-State ::= INTEGER {
+  not-Running(85),
+  running(86),
+  disabled(87)
+}
+
+RCP-Slave-State ::= INTEGER {
+  not-Detected(0),
+  detected(1),
+  registered(2),
+  comms-Lost(3),
+  missing(4),
+  rebooting(5)
+}
+
+Trap-Alarm-Keep-Severity ::= INTEGER {
+  critical(1),
+  major(2),
+  minor(3),
+  warning(4),
+  cleared(5)
+}
+
+Alarm-Severity ::= INTEGER {
+  disabled(0),
+  critical(1),
+  major(2),
+  minor(3),
+  warning(4),
+  control(5)
+}
+
+Trap-Receiver-Mode ::= INTEGER {
+  normal-Traps(1),
+  acknowledged-Summary-Trap(2)
+}
+
+Alarm-Active-State ::= INTEGER {
+  not-Active(0),
+  active-Warning(1),
+  active-Major(2),
+  active-Minor(3),
+  reserved(4),
+  active-Critical(5),
+  active-Control(6)
+}
+
+Control-State ::= INTEGER {
+  normal(0),
+  equalize(1),
+  fast-Charge(2),
+  battery-Test(3)
+}
+
+Control-Process-State ::= INTEGER {
+  disabled(0),
+  active(1),
+  inactive(2),
+  pending(3)
+}
+
+Julian-Time-UTC ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..25))
+
+External-Relay-State ::= INTEGER {
+  active(0),
+  inactive(1),
+  missing(2),
+  disabled(3),
+  conflict(4)
+}
+
+Relay-Control-State ::= INTEGER {
+  active(0),
+  automatic(1),
+  inactive(2)
+}
+
+Rect-Fail-State ::= INTEGER {
+  not-Failed(0),
+  bad-Status(1),
+  bad-Output(2)
+}
+
+Alarm-Type ::= INTEGER {
+  system-Alarm(0),
+  ai-High(1),
+  ai-Low(2),
+  di(3),
+  smart-Alarm(4)
+}
+
+System-State ::= INTEGER {
+  ok(0),
+  failed(1),
+  unavailable(2),
+  missing(3)
+}
+
+Alarm-Operator ::= INTEGER {
+  and(0),
+  or(1),
+  xor(2)
+}
+
+Source-Alarm-Logic ::= INTEGER {
+  equal(0),
+  not(1)
+}
+
+Source-Trigger ::= INTEGER {
+  triggered(0),
+  active(1)
+}
+
+In-Discharge-Alarm-Condition ::= INTEGER {
+  always(0),
+  only-While-AC-Present(1)
+}
+
+Trigger-State ::= INTEGER {
+  active(0),
+  inactive(1),
+  cycle(2),
+  invalid(3)
+}
+
+Threshold-Type ::= INTEGER {
+  high(0),
+  low(1)
+}
+
+System-Value-Source-Value ::= INTEGER {
+  bus-Voltage(0),
+  rectifier-Current(1),
+  load-Current(2),
+  battery-Current(3),
+  battery-Temperature(4),
+  load-Power(5),
+  system-Power(6),
+  ah-Discharged(7),
+  number-Of-Rectifiers-Failed(8),
+  number-Of-Rectifiers-Comms-Lost(9)
+}
+
+BTR-State ::= INTEGER {
+  inoperative(0),
+  inactive(1),
+  active(2),
+  characterizing(3),
+  waiting(4),
+  not-Characterized(5)
+}
+
+System-Alarm ::= INTEGER {
+  mains-Fail(1),
+  rectifier-Module-Connected(2),
+  rectifier-Comms-Lost(3),
+  protection(4),
+  ac-Fail(5),
+  fan-Fail(6),
+  hibernation(7),
+  shutDown(8),
+  rm-Current-Limit(9),
+  rectifier-Fail(10),
+  rectifier-High-Temp(11),
+  high-Load-Dc-Voltage(12),
+  high-Float-Dc-Voltage(13),
+  low-Float-Dc-Voltage(14),
+  low-Load-Dc-Voltage(15),
+  system-Load-Current-High(16),
+  ambient-Temperature-High(17),
+  battery-Temperature-High(18),
+  load-Fuse(19),
+  battery-Fuse(20),
+  equalizing-Charge(21),
+  battery-Test-Failure(22),
+  battery-On-Load(23),
+  battery-Test-Normal(24),
+  battery-Test-Testing(25)
+}
+
+Energize-State ::= INTEGER {
+  de-Energized(0),
+  energized(1)
+}
+
+Relay-Mapping ::= INTEGER {
+  none(0),
+  digital-Output-1(1),
+  digital-Output-2(2),
+  digital-Output-3(3),
+  digital-Output-4(4),
+  digital-Output-5(5),
+  digital-Output-6(6),
+  digital-Output-7(7),
+  digital-Output-8(8),
+  digital-Output-9(9),
+  digital-Output-10(10),
+  digital-Output-11(11),
+  digital-Output-12(12),
+  digital-Output-13(13),
+  digital-Output-14(14),
+  digital-Output-15(15),
+  digital-Output-16(16),
+  digital-Output-17(17),
+  digital-Output-18(18),
+  digital-Output-19(19),
+  digital-Output-20(20),
+  digital-Output-21(21),
+  digital-Output-22(22),
+  digital-Output-23(23),
+  digital-Output-24(24),
+  digital-Output-25(25),
+  digital-Output-26(26),
+  digital-Output-27(27),
+  digital-Output-28(28),
+  digital-Output-29(29),
+  digital-Output-30(30),
+  digital-Output-31(31),
+  digital-Output-32(32)
+}
+
+Active-State ::= INTEGER {
+  closed(2),
+  open(3)
+}
+
+Digital-Input-State ::= INTEGER {
+  missing(1),
+  closed(2),
+  open(3),
+  disabled(4)
+}
+
+Measurement-Units ::= INTEGER {
+  none(30),
+  volts(31),
+  milli-Amps(32),
+  amps(33),
+  kilo-Amps(34),
+  degree-celsius(35),
+  kilo-Watts(36),
+  percent(37),
+  volts-AC(38),
+  volts-DC(39),
+  amps-AC(40),
+  amps-DC(41),
+  litre(42),
+  litre-Per-Sec(43),
+  cubic-Meter-Per-Hour(44),
+  pascal(45),
+  kilo-Pascal(46),
+  mmH2O(47),
+  percent-Relative-Humidity(48),
+  rpm(49),
+  hertz(50),
+  kilo-Volt-Amps(51),
+  kilo-Watt-Hour(52)
+}
+
+Overload-Alarm-Type ::= INTEGER {
+  total-Capacity(0),
+  redundancy(1)
+}
+
+MPM-State ::= INTEGER {
+  unable-To-Start(0),
+  locked-Out(1),
+  converging(2),
+  stable(3),
+  disabled(4)
+}
+
+MPM-Battery-State ::= INTEGER {
+  ok(0),
+  pending-Fail(1),
+  failed(2),
+  unavailable(3),
+  not-Configured(4)
+}
+
+LVD-State ::= INTEGER {
+  idle(0),
+  connected(1),
+  disconnected(2),
+  manual(3),
+  no-Contactors(4)
+}
+
+LVDC-Type ::= INTEGER {
+  normally-Open(0),
+  normally-Closed(1)
+}
+
+LVDC-State ::= INTEGER {
+  connected(0),
+  disconnected(1),
+  failed(2),
+  missing(3),
+  disabled(4),
+  conflict(5),
+  not-Characterized(6)
+}
+
+Baud-Rate ::= INTEGER {
+  baud-Rate2400(8),
+  baud-Rate4800(9),
+  baud-Rate9600(10),
+  baud-Rate19200(11)
+}
+
+Parity ::= INTEGER {
+  none(0),
+  odd(1),
+  even(2)
+}
+
+Stop-Bits ::= INTEGER {
+  one(1),
+  two(2)
+}
+
+BTR-Characterization-Result ::= INTEGER {
+  not-Yet-Run(0),
+  sensor-Failed(1),
+  not-Fully-Charged(2),
+  unstable-Battery-Current(3),
+  voltage-Step-Detected(4),
+  complete(5),
+  updated(6),
+  user-Canceled(7)
+}
+
+String-10 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..10))
+
+String-17 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..17))
+
+String-20 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..20))
+
+String-30 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..30))
+
+String-32 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..32))
+
+String-40 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..40))
+
+String-60 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..60))
+
+String-64 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..64))
+
+MIB-Object-ID ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..80))
+
+String-253 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..253))
+
+-- OID Value Assignment and OBJECT-TYPE Construct ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sinergiTeknologiUtama OBJECT IDENTIFIER ::= { enterprises 47865 }
+dc-Power-System OBJECT IDENTIFIER ::= { sinergiTeknologiUtama 2 }
+gp OBJECT IDENTIFIER ::= { dc-Power-System 20 }
+
+gp-Objects OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { gp 10 }
+
+system-Identity OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { gp-Objects 10 }
+
+system-Manufacturer OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The manufacturer of the DC power system."
+  DEFVAL { "System Manufacturer" }
+::= { system-Identity 10 }
+
+product-Serial-Number OBJECT-TYPE
+  SYNTAX String-10
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The DC power system serial number assigned by the manufacturer."
+  DEFVAL { "0000000000" }
+::= { system-Identity 20 }
+
+rectifier-Serial-Number OBJECT-TYPE
+  SYNTAX String-10
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The rectifier system serial number assigned by the manufacturer."
+  DEFVAL { "0000000000" }
+::= { system-Identity 30 }
+
+software-Version OBJECT-TYPE
+  SYNTAX String-10
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The rectifier system software version."
+  DEFVAL { "0000000000" }
+::= { system-Identity 40 }
+
+system-Type OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The DC power system model number assigned by the manufacturer."
+  DEFVAL { "System Type" }
+::= { system-Identity 50 }
+
+system-Location OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Usually the location of the DC power system within the site."
+  DEFVAL { "System Location" }
+::= { system-Identity 60 }
+
+site-Name OBJECT-TYPE
+  SYNTAX String-40
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The site designation or code."
+  DEFVAL { "Site Name" }
+::= { system-Identity 70 }
+
+site-Address OBJECT-TYPE
+  SYNTAX String-40
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The street address of the site."
+  DEFVAL { "Site Address" }
+::= { system-Identity 80 }
+
+
+
+communications OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { gp-Objects 20 }
+
+ip-Address OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The Internet Protocol (IP) address. This value and the Subnet Mask must be set correctly to communicate using Ethernet. Consult your network administrator."
+  DEFVAL { "1.1.1.1" }
+::= { communications 10 }
+
+subnet-Mask OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Identifies which fragment of the IP address is the sub-network identity. This value and the IP Address must be set correctly to communicate using Ethernet. Consult your network administrator."
+  DEFVAL { "255.255.255.0" }
+::= { communications 20 }
+
+gateway-Address OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Allows access to IP addresses outside your sub-network. Consult your network administrator."
+  DEFVAL { "1.1.1.1" }
+::= { communications 30 }
+
+
+snmp OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { communications 40 }
+
+snmp-Read-Community OBJECT-TYPE
+  SYNTAX String-32
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Community that can get items."
+  DEFVAL { "public" }
+::= { snmp 10 }
+
+snmp-Write-Community OBJECT-TYPE
+  SYNTAX String-32
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Community that can set items."
+  DEFVAL { "private" }
+::= { snmp 20 }
+
+enable-Trap-Repeat OBJECT-TYPE
+  SYNTAX Enable-State
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "If enabled, alarm activation traps will be repeated according to Trap Repeat Rate."
+  DEFVAL { enabled }
+::= { snmp 30 }
+
+trap-Repeat-Rate OBJECT-TYPE
+  SYNTAX TimeIntervalInMinutes
+  UNITS "min"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "How often to send a trap to trap receivers if Enable Trap Repeat is Enabled or the trap receiver's Trap Receiver Mode is Acknowledged Summary Trap."
+  DEFVAL { 1 }
+::= { snmp 40 }
+
+snmp-Trap-Receiver-Table OBJECT-TYPE
+  SYNTAX SEQUENCE OF SNMP-Trap-Receiver-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+::= { snmp 50 }
+
+snmp-Trap-Receiver-Entry OBJECT-TYPE
+  SYNTAX SNMP-Trap-Receiver-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+  INDEX  { snmp-Trap-Receiver-Index }
+::= { snmp-Trap-Receiver-Table 1 }
+
+SNMP-Trap-Receiver-Entry ::= SEQUENCE {
+  snmp-Trap-Receiver-Index Unsigned8,
+  trap-Receiver-IP-Address IpAddress,
+  trap-Receiver-Port Unsigned16,
+  trap-Receiver-Name String-20,
+  trap-Receiver-Level Severity-Level,
+  trap-Receiver-Community String-32,
+  trap-Receiver-Mode Trap-Receiver-Mode,
+  acknowledge-Alarm-Summary-Trap No-Data
+}
+
+snmp-Trap-Receiver-Index OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "Automatically generated index object."
+::= { snmp-Trap-Receiver-Entry 1 }
+
+
+trap-Receiver-IP-Address OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "SNMP notifications of events are sent to this IP address."
+  DEFVAL { "1.1.1.1" }
+::= { snmp-Trap-Receiver-Entry 20 }
+
+trap-Receiver-Port OBJECT-TYPE
+  SYNTAX Unsigned16
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "SNMP notifications of events are sent to this UDP port."
+  DEFVAL { 162 }
+::= { snmp-Trap-Receiver-Entry 30 }
+
+trap-Receiver-Name OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Name used to identify the receiver."
+  DEFVAL { "" }
+::= { snmp-Trap-Receiver-Entry 40 }
+
+trap-Receiver-Level OBJECT-TYPE
+  SYNTAX Severity-Level
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Sets the severity of alarms to be reported to this trap receiver."
+  DEFVAL { none }
+::= { snmp-Trap-Receiver-Entry 50 }
+
+trap-Receiver-Community OBJECT-TYPE
+  SYNTAX String-32
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Community to use for traps sent to the receiver."
+  DEFVAL { "public" }
+::= { snmp-Trap-Receiver-Entry 60 }
+
+trap-Receiver-Mode OBJECT-TYPE
+  SYNTAX Trap-Receiver-Mode
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Set to Normal traps to send normal traps to a Network Management System on alarm activation and deactivation. Set to Acknowledged Summary Traps to send summary traps to PowerManagerII. These traps are repeated until PowerManagerII receives the trap, connects to the controller, and downloads alarms and data."
+  DEFVAL { normal-Traps }
+::= { snmp-Trap-Receiver-Entry 70 }
+
+acknowledge-Alarm-Summary-Trap OBJECT-TYPE
+  SYNTAX No-Data
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "This command will acknowledge reception of the alarm summary trap."
+::= { snmp-Trap-Receiver-Entry 80 }
+
+-- monitoring 
+monitoring OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { gp-Objects 30 }
+
+ac-Module OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { monitoring 10 }
+
+phaseA-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { ac-Module 10 }
+
+phaseB-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { ac-Module 20 }
+
+phaseC-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { ac-Module 30 }
+
+rectifier-Module OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { monitoring 20 }
+
+rectifier-Module-Table OBJECT-TYPE
+  SYNTAX SEQUENCE OF Rectifier-Module-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+::= { rectifier-Module 10 }
+
+rectifier-Module-Entry OBJECT-TYPE
+  SYNTAX Rectifier-Module-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+  INDEX  { rectifier-Module-Index }
+::= { rectifier-Module-Table 1 }
+
+Rectifier-Module-Entry ::= SEQUENCE {
+  rectifier-Module-Index Unsigned8,
+  rectifier-Current Float,
+  fan-Rotation Float,
+  temperature-Module Float,
+  rectifier-Voltage Float,
+  remote-Startup Unsigned8,
+  remote-Shutdown Unsigned8
+}
+
+rectifier-Module-Index OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "Automatically generated index object."
+::= { rectifier-Module-Entry 1 }
+
+rectifier-Current OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { rectifier-Module-Entry 2 }
+
+fan-Rotation OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "Rpm"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { rectifier-Module-Entry 3 }
+
+temperature-Module OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { rectifier-Module-Entry 4 }
+
+rectifier-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { rectifier-Module-Entry 5 }
+
+remote-Startup OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS write-only
+  STATUS current
+  DESCRIPTION ""
+::= { rectifier-Module-Entry 6 }
+
+remote-Shutdown OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS write-only
+  STATUS current
+  DESCRIPTION ""
+::= { rectifier-Module-Entry 7 }
+
+
+dc-Distribution OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { monitoring 30 }
+ 
+bus-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution 10 }
+
+battery-Current OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution 20 }
+
+load-Current OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution 30 }
+
+battery-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution 40 }
+
+number-Of-Rectifier-Modules OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The number of rectifier modules."
+::= { dc-Distribution 50 }
+
+ambient-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution 60 }
+
+ambient-Humidity OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "%"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution 70 }
+
+address-Available-Module OBJECT-TYPE
+  SYNTAX Unsigned8
+  UNITS ""
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution 80 }
+
+
+-- setting 
+setting OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { gp-Objects 40 }
+
+ 
+dc-Distribution-Setting OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 10 }
+
+high-Load-Alarm-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 10 }
+
+low-Load-Alarm-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 20 }
+
+high-Float-Alarm-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 30 }
+
+low-Float-Alarm-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 40 }
+
+battery-Temperature-High-Alarm-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 50 }
+
+float-Charge-Voltage-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 60 }
+
+bus-Voltage-Gain OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 70 }
+
+equalizing-Charge-Voltage-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 80 }
+
+temperature-Compensation-Enable OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 90 }
+
+temperature-Compensation-Coefficient OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 100 }
+
+battery-Capacity OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "%"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 110 }
+
+battery-Charge-Current-Limiting OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 120 }
+
+lvd1 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 130 }
+
+lvd1-Reconnection-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 140 }
+
+lvd2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 150 }
+
+lvd2-Reconnection-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 160 }
+
+periodical-Equalizing-Charge-Enable OBJECT-TYPE
+  SYNTAX Boolean
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 170 }
+
+periodical-Equalizing-Charge-Interval OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 180 }
+
+manual-Equalizing-Charge-Enable OBJECT-TYPE
+  SYNTAX Boolean
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 190 }
+
+fast-Charge-Enable OBJECT-TYPE
+  SYNTAX Boolean
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 200 }
+
+fast-Charge-Voltage-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 210 }
+
+fast-Charge-Time-Limiting OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 220 }
+
+equalizing-Charge-Duration OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 230 }
+
+battery-Test-Enable OBJECT-TYPE
+  SYNTAX Boolean
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 240 }
+
+battery-Test-Start-Voltage-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 250 }
+
+battery-Test-Terminal-Voltage-Set-Point OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 260 }
+
+battery-Test-Auto-Enable OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 270 }
+
+battery-Test-Duration OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 280 }
+
+battery-Test-Auto-Start-Date OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 290 }
+
+battery-Test-Interval OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { dc-Distribution-Setting 300 }
+
+
+-- alarms 
+alarms OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { gp-Objects 50 }
+
+summary-Alarm-Critical OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 10 }
+ 
+summary-Alarm-Major OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 20 }
+
+summary-Alarm-Minor OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 30 }
+
+summary-Alarm-Warning OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 40 }
+
+alarm-Table OBJECT-TYPE
+  SYNTAX SEQUENCE OF Alarm-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 50 }
+
+alarm-Entry OBJECT-TYPE
+  SYNTAX Alarm-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+  INDEX  { alarm-Index }
+::= { alarm-Table 1 }
+
+Alarm-Entry ::= SEQUENCE {
+  alarm-Index System-Alarm,
+  alarm-Name String-40,
+  alarm-Severity Alarm-Severity,
+  alarm-State Alarm-Active-State,
+  alarm-Notes String-60
+}
+
+alarm-Index OBJECT-TYPE
+  SYNTAX System-Alarm
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "Automatically generated index object."
+::= { alarm-Entry 10 }
+
+
+alarm-Name OBJECT-TYPE
+  SYNTAX String-40
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The name of the Alarm."
+::= { alarm-Entry 20 }
+
+alarm-Severity OBJECT-TYPE
+  SYNTAX Alarm-Severity
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The severity level associated with the alarm. Control alarms are not displayed, although any configured digital outputs are still activated."
+  DEFVAL { major }
+::= { alarm-Entry 30 }
+
+alarm-State OBJECT-TYPE
+  SYNTAX Alarm-Active-State
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The state of this alarm."
+::= { alarm-Entry 40 }
+
+alarm-Notes OBJECT-TYPE
+  SYNTAX String-60
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "User notes about this alarm. These notes appear in SNMP traps and can be viewed using DCTools or PowerManagerII."
+  DEFVAL { "" }
+::= { alarm-Entry 50 }
+
+-- end of alarms
+
+
+
+-- traps object
+gp-Traps OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { gp 20 }
+
+global-Traps NOTIFICATION-TYPE
+  OBJECTS {alarm-Index, alarm-Name, alarm-Severity, alarm-State, alarm-Notes, system-Location, site-Name, site-Address}
+  STATUS current
+  DESCRIPTION "An alarm has changed state."
+::= { gp-Traps 1000 }
+
+END

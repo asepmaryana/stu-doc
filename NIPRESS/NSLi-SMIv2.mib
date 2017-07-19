@@ -1,0 +1,2152 @@
+-- MIB Module Name ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+NSLI-MIB DEFINITIONS ::= BEGIN
+
+-- Imported Items ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORTS
+        enterprises, IpAddress, TimeTicks, OBJECT-TYPE, mib-2,
+                MODULE-IDENTITY, NOTIFICATION-TYPE,
+                OBJECT-IDENTITY, Integer32, Counter32
+            FROM SNMPv2-SMI
+
+        TEXTUAL-CONVENTION
+            FROM SNMPv2-TC;
+
+nsMibModule MODULE-IDENTITY
+    LAST-UPDATED "201701051100Z"
+    ORGANIZATION "PT. Sinergi Teknologi Utama"
+    CONTACT-INFO "Asep Maryana - asep.maryana@sinergiteknologi.com"
+    DESCRIPTION "MIB information for NS Lithium 48-25"
+  ::= { mib-2 1 }
+
+-- Type Assignments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Signed8 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -128..127 )
+
+Signed16 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -32768..32767 )
+
+Signed32 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -2147483648..2147483647 )
+
+Unsigned8 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( 0..255 )
+
+Unsigned16 ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( 0..65535 )
+  
+Boolean ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX INTEGER { false(0), true(1) }
+
+Float ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX Integer32 ( -2147483648..2147483647 )
+
+TimeIntervalInSeconds ::= TimeTicks
+
+TimeIntervalInMinutes ::= Integer32
+
+TimeIntervalInDays ::= Integer32
+
+Access-Level ::= INTEGER {
+  read-Only(80),
+  read-Write(81)
+}
+
+Enable-State ::= INTEGER {
+  disabled(0),
+  enabled(1)
+}
+
+Severity-Level ::= INTEGER {
+  warnings-And-Above(1),
+  minor-And-Above(2),
+  major-And-Above(3),
+  none(4),
+  critical-Only(5)
+}
+
+SNMP-Trap-Version ::= INTEGER {
+  snmp-V1-Trap(0),
+  snmp-V2-Trap(1),
+  snmp-V3-Trap(2)
+}
+
+Trap-Receiver-Mode ::= INTEGER {
+  normal-Traps(1),
+  acknowledged-Summary-Trap(2)
+}
+
+Alarm-Active-State ::= INTEGER {
+  not-Active(0),
+  active-Warning(1),
+  active-Major(2),
+  active-Minor(3),
+  reserved(4),
+  active-Critical(5),
+  active-Control(6)
+}
+
+Trap-Alarm-Keep-Severity ::= INTEGER {
+  critical(1),
+  major(2),
+  minor(3),
+  warning(4),
+  cleared(5)
+}
+
+Alarm-Severity ::= INTEGER {
+  disabled(0),
+  critical(1),
+  major(2),
+  minor(3),
+  warning(4),
+  control(5)
+}
+
+System-Alarm ::= INTEGER {
+	cell-Over-Voltage-Protect(1),
+	cell-Under-Voltage-Protect(2),
+	pack-Over-Voltage-Protect(3),
+	pack-Under-Voltage-Protect(4),
+	charging-Over-Current-Protect(5),
+	discharging-Over-Current-Protect(6),
+	short-Circuit-Protect(7),
+	charging-Over-Temperature-Protect(8),
+	discharging-Over-Temperature-Protect(9),
+	charging-Under-Temperature-Protect(10),
+	discharging-Under-Temperature-Protect(11),
+	mosfet-Over-Temperature-Protect(12),
+	environment-Over-Temperature-Protect(13),
+	environment-Under-Temperature-Protect(14),
+	discharging-Mosfet-Fault(15),
+	charging-Mosfet-Fault(16),
+	temperature-NTC-Fault(17),
+	battery-Voltage-Fault(18),
+	sampling-Fault(19),
+	pack-Over-Voltage-Warning(20),
+	pack-Under-Voltage-Warning(21),
+	cell-Over-Voltage-Warning(22),
+	cell-Under-Voltage-Warning(23),
+	charging-Over-Current-Warning(24),
+	discharging-Over-Current-Warning(25),
+	charging-Over-Temperature-Warning(26),
+	discharging-Over-Temperature-Warning(27),
+	charging-Under-Temperature-Warning(28),
+	discharging-Under-Temperature-Warning(29),
+	environment-Over-Temperature-Warning(30),
+	environment-Under-Temperature-Warning(31),
+	mos-Over-Temperature-Warning(32),
+	soc-Low-Warning(33)
+}
+
+Active-State ::= INTEGER {
+  closed(2),
+  open(3)
+}
+
+String-10 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..10))
+
+String-17 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..17))
+
+String-20 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..20))
+
+String-30 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..30))
+
+String-32 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..32))
+
+String-40 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..40))
+
+String-60 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..60))
+
+String-64 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..64))
+
+MIB-Object-ID ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..80))
+
+String-253 ::= TEXTUAL-CONVENTION
+    STATUS       current
+    DESCRIPTION  ""
+    SYNTAX       OCTET STRING (SIZE(0..253))
+
+No-Data ::= TEXTUAL-CONVENTION
+  STATUS current
+  DESCRIPTION ""
+  SYNTAX OCTET STRING(SIZE(0))
+  
+-- OID Value Assignment and OBJECT-TYPE Construct ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sinergiTeknologiUtama OBJECT IDENTIFIER ::= { enterprises 47865 }
+dc-Power-System OBJECT IDENTIFIER ::= { sinergiTeknologiUtama 2 }
+ns OBJECT IDENTIFIER ::= { dc-Power-System 30 }
+
+ns-Objects OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns 10 }
+
+system-Identity OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns-Objects 10 }
+
+system-Manufacturer OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The manufacturer of the DC power system."
+  DEFVAL { "System Manufacturer" }
+::= { system-Identity 10 }
+
+product-Serial-Number OBJECT-TYPE
+  SYNTAX String-10
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The DC power system serial number assigned by the manufacturer."
+  DEFVAL { "0000000000" }
+::= { system-Identity 20 }
+
+rectifier-Serial-Number OBJECT-TYPE
+  SYNTAX String-10
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The rectifier system serial number assigned by the manufacturer."
+  DEFVAL { "0000000000" }
+::= { system-Identity 30 }
+
+software-Version OBJECT-TYPE
+  SYNTAX String-10
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The rectifier system software version."
+  DEFVAL { "0000000000" }
+::= { system-Identity 40 }
+
+system-Type OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The DC power system model number assigned by the manufacturer."
+  DEFVAL { "System Type" }
+::= { system-Identity 50 }
+
+system-Location OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Usually the location of the DC power system within the site."
+  DEFVAL { "System Location" }
+::= { system-Identity 60 }
+
+site-Name OBJECT-TYPE
+  SYNTAX String-40
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The site designation or code."
+  DEFVAL { "Site Name" }
+::= { system-Identity 70 }
+
+site-Address OBJECT-TYPE
+  SYNTAX String-40
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The street address of the site."
+  DEFVAL { "Site Address" }
+::= { system-Identity 80 }
+
+
+
+communications OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns-Objects 20 }
+
+ip-Address OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The Internet Protocol (IP) address. This value and the Subnet Mask must be set correctly to communicate using Ethernet. Consult your network administrator."
+  DEFVAL { "1.1.1.1" }
+::= { communications 10 }
+
+subnet-Mask OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Identifies which fragment of the IP address is the sub-network identity. This value and the IP Address must be set correctly to communicate using Ethernet. Consult your network administrator."
+  DEFVAL { "255.255.255.0" }
+::= { communications 20 }
+
+gateway-Address OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Allows access to IP addresses outside your sub-network. Consult your network administrator."
+  DEFVAL { "1.1.1.1" }
+::= { communications 30 }
+
+
+snmp OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { communications 40 }
+
+snmp-Read-Community OBJECT-TYPE
+  SYNTAX String-32
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Community that can get items."
+  DEFVAL { "public" }
+::= { snmp 10 }
+
+snmp-Write-Community OBJECT-TYPE
+  SYNTAX String-32
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Community that can set items."
+  DEFVAL { "private" }
+::= { snmp 20 }
+
+enable-Trap-Repeat OBJECT-TYPE
+  SYNTAX Enable-State
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "If enabled, alarm activation traps will be repeated according to Trap Repeat Rate."
+  DEFVAL { enabled }
+::= { snmp 30 }
+
+trap-Repeat-Rate OBJECT-TYPE
+  SYNTAX TimeIntervalInMinutes
+  UNITS "min"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "How often to send a trap to trap receivers if Enable Trap Repeat is Enabled or the trap receiver's Trap Receiver Mode is Acknowledged Summary Trap."
+  DEFVAL { 1 }
+::= { snmp 40 }
+
+snmp-Trap-Receiver-Table OBJECT-TYPE
+  SYNTAX SEQUENCE OF SNMP-Trap-Receiver-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+::= { snmp 50 }
+
+snmp-Trap-Receiver-Entry OBJECT-TYPE
+  SYNTAX SNMP-Trap-Receiver-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+  INDEX  { snmp-Trap-Receiver-Index }
+::= { snmp-Trap-Receiver-Table 1 }
+
+SNMP-Trap-Receiver-Entry ::= SEQUENCE {
+  snmp-Trap-Receiver-Index Unsigned8,
+  trap-Receiver-IP-Address IpAddress,
+  trap-Receiver-Port Unsigned16,
+  trap-Receiver-Name String-20,
+  trap-Receiver-Level Severity-Level,
+  trap-Receiver-Community String-32,
+  trap-Receiver-Mode Trap-Receiver-Mode,
+  acknowledge-Alarm-Summary-Trap No-Data
+}
+
+snmp-Trap-Receiver-Index OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "Automatically generated index object."
+::= { snmp-Trap-Receiver-Entry 1 }
+
+
+trap-Receiver-IP-Address OBJECT-TYPE
+  SYNTAX IpAddress
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "SNMP notifications of events are sent to this IP address."
+  DEFVAL { "1.1.1.1" }
+::= { snmp-Trap-Receiver-Entry 20 }
+
+trap-Receiver-Port OBJECT-TYPE
+  SYNTAX Unsigned16
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "SNMP notifications of events are sent to this UDP port."
+  DEFVAL { 162 }
+::= { snmp-Trap-Receiver-Entry 30 }
+
+trap-Receiver-Name OBJECT-TYPE
+  SYNTAX String-20
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Name used to identify the receiver."
+  DEFVAL { "" }
+::= { snmp-Trap-Receiver-Entry 40 }
+
+trap-Receiver-Level OBJECT-TYPE
+  SYNTAX Severity-Level
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Sets the severity of alarms to be reported to this trap receiver."
+  DEFVAL { none }
+::= { snmp-Trap-Receiver-Entry 50 }
+
+trap-Receiver-Community OBJECT-TYPE
+  SYNTAX String-32
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Community to use for traps sent to the receiver."
+  DEFVAL { "public" }
+::= { snmp-Trap-Receiver-Entry 60 }
+
+trap-Receiver-Mode OBJECT-TYPE
+  SYNTAX Trap-Receiver-Mode
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "Set to Normal traps to send normal traps to a Network Management System on alarm activation and deactivation. Set to Acknowledged Summary Traps to send summary traps to PowerManagerII. These traps are repeated until PowerManagerII receives the trap, connects to the controller, and downloads alarms and data."
+  DEFVAL { normal-Traps }
+::= { snmp-Trap-Receiver-Entry 70 }
+
+acknowledge-Alarm-Summary-Trap OBJECT-TYPE
+  SYNTAX No-Data
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "This command will acknowledge reception of the alarm summary trap."
+::= { snmp-Trap-Receiver-Entry 80 }
+
+
+-- status 
+status OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns-Objects 30 }
+ 
+cell-1-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 10 }
+
+cell-2-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 20 }
+
+cell-3-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 30 }
+
+cell-4-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 40 }
+
+cell-5-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 50 }
+
+cell-6-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 60 }
+
+cell-7-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 70 }
+
+cell-8-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 80 }
+
+cell-9-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 90 }
+
+cell-10-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 100 }
+
+cell-11-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 110 }
+
+cell-12-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 120 }
+
+cell-13-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 130 }
+
+cell-14-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 140 }
+
+cell-15-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 150 }
+
+cell-16-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 160 }
+
+cell-1-Temperature-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 170 }
+
+cell-2-Temperature-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 180 }
+
+cell-3-Temperature-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 190 }
+
+cell-4-Temperature-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 200 }
+
+cell-5-Temperature-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 210 }
+
+cell-6-Temperature-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 220 }
+
+pack-charging-Current-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 230 }
+
+pack-Voltage-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 240 }
+
+pack-Discharging-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 250 }
+
+fully-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 260 }
+
+current-Limiting-Circuit-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 270 }
+
+charging-Mosfet-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 280 }
+
+discharging-Mosfet-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 290 }
+
+power-Supply-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 300 }
+
+ac-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 310 }
+
+state-Of-Heater-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 320 }
+
+buzzer-Warning-Function-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 330 }
+
+current-Limit-Control-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 340 }
+
+current-Limit-Function-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 350 }
+
+led-Warning-Function-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 360 }
+
+cell-1-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 370 }
+
+cell-2-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 380 }
+
+cell-3-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 390 }
+
+cell-4-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 400 }
+
+cell-5-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 410 }
+
+cell-6-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 420 }
+
+cell-7-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 430 }
+
+cell-8-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 440 }
+
+cell-9-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 450 }
+
+cell-10-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 460 }
+
+cell-11-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 470 }
+
+cell-12-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 480 }
+
+cell-13-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 490 }
+
+cell-14-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 500 }
+
+cell-15-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 510 }
+
+cell-16-Balancing-Status OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { status 520 }
+
+
+-- measurement 
+measurement OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns-Objects 40 }
+
+cell OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { measurement 10 }
+
+cell-1-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 10 }
+
+cell-2-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 20 }
+
+cell-3-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 30 }
+
+cell-4-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 40 }
+
+cell-5-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 50 }
+
+cell-6-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 60 }
+
+cell-7-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 70 }
+
+cell-8-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 80 }
+
+cell-9-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 90 }
+
+cell-10-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 100 }
+
+cell-11-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 110 }
+
+cell-12-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 120 }
+
+cell-13-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 130 }
+
+cell-14-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 140 }
+
+cell-15-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 150 }
+
+cell-16-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 160 }
+
+cell-1-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 170 }
+
+cell-2-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 180 }
+
+cell-3-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 190 }
+
+cell-4-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { cell 200 }
+
+
+mosfet OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { measurement 20 }
+
+mosfet-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { mosfet 10 }
+
+
+environment OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+::= { measurement 30 }
+
+environment-Temperature OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { environment 10 }
+
+
+pack OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { measurement 40 }
+
+pack-charging-Current OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { pack 10 }
+
+pack-Voltage OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { pack 20 }
+
+
+capacity OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { measurement 50 }
+
+remain-Capacity OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "AH"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { capacity 10 }
+
+full-Capacity OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "AH"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { capacity 20 }
+
+design-Capacity OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "AH"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { capacity 30 }
+
+
+charger OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { measurement 60 }
+
+discharge-Charger-Cycle-Count OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "Cycle"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { charger 10 }
+
+
+-- setting 
+setting OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns-Objects 50 }
+
+code-4430 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 10 }
+ 
+status-Enable-4430 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 10 }
+
+cell-Over-Charge-Voltage-Alarm-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 20 }
+
+cell-Over-Charge-Voltage-Alarm-Treshold-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 30 }
+
+cell-Over-Charge-Voltage-Protection-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 40 }
+
+cell-Over-Charge-Voltage-Protection-Treshold-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 50 }
+
+cell-Over-Charge-Protection-Release-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 60 }
+
+cell-Over-Charge-Protection-Release-Treshold-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 70 }
+
+cell-Over-Charge-Protection-Delay-Time-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 80 }
+
+cell-Over-Charge-Protection-Delay-Time-Treshold-4430 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4430 90 }
+
+
+code-4432 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 20 }
+
+status-Enable-4432 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 10 }
+
+cell-Under-Discharge-Voltage-Alarm-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 20 }
+
+cell-Under-Discharge-Voltage-Alarm-Treshold-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 30 }
+
+cell-Under-Discharge-Voltage-Protection-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 40 }
+
+cell-Under-Discharge-Voltage-Protection-Treshold-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 50 }
+
+cell-Under-Discharge-Protection-Release-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 60 }
+
+cell-Under-Discharge-Protection-Release-Treshold-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 70 }
+
+cell-Under-Discharge-Protection-Delay-Time-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 80 }
+
+cell-Under-Discharge-Protection-Delay-Time-Treshold-4432 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4432 90 }
+
+
+code-4434 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 30 }
+
+status-Enable-4433 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 10 }
+
+pack-Over-Charge-Voltage-Alarm-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 20 }
+
+pack-Over-Charge-Voltage-Alarm-Treshold-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 30 } 
+ 
+pack-Over-Charge-Voltage-Protection-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 40 }
+ 
+pack-Over-Charge-Voltage-Protection-Treshold-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 50 }
+
+pack-Over-Charge-Protection-Release-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 60 }
+ 
+pack-Over-Charge-Protection-Release-Treshold-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 70 }
+ 
+pack-Over-Charge-Protection-Delay-Time-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 80 }
+
+pack-Over-Charge-Protection-Delay-Time-Treshold-4434 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4434 90 }
+
+
+code-4436 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 40 }
+
+status-Enable-4436 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 10 }
+
+pack-Under-Discharge-Voltage-Alarm-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 20 }
+
+pack-Under-Discharge-Voltage-Alarm-Treshold-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 30 } 
+ 
+pack-Under-Discharge-Voltage-Protection-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 40 }
+ 
+pack-Under-Discharge-Voltage-Protection-Treshold-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 50 }
+
+pack-Under-Discharge-Protection-Release-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 60 }
+ 
+pack-Under-Discharge-Protection-Release-Treshold-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 70 }
+ 
+pack-Under-Discharge-Protection-Delay-Time-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 80 }
+
+pack-Under-Discharge-Protection-Delay-Time-Treshold-4436 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4436 90 }
+
+
+code-4438 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 50 }
+
+status-Enable-4438 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4438 10 }
+
+charge-Over-Current-Alarm-4438 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4438 20 }
+
+charge-Over-Current-Alarm-Treshold-4438 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4438 30 }
+
+charge-Over-Current-Protection-4438 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4438 40 }
+
+charge-Over-Current-Protection-Treshold-4438 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4438 50 }
+
+charge-Over-Current-Protection-Delay-Time-4438 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4438 60 }
+
+charge-Over-Current-Protection-Delay-Time-Treshold-4438 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4438 70 }
+
+
+code-4441 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 60 }
+
+status-Enable-4441 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4441 10 }
+
+discharge-Over-Current-Alarm-4441 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4441 20 }
+
+discharge-Over-Current-Alarm-Treshold-4441 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4441 30 }
+
+discharge-Over-Current-Protection-4441 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4441 40 }
+
+discharge-Over-Current-Protection-Treshold-4441 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4441 50 }
+
+discharge-Over-Current-Protection-Delay-Time-4441 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4441 60 }
+
+discharge-Over-Current-Protection-Delay-Time-Treshold-4441 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4441 70 } 
+ 
+
+code-4532 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 70 }
+
+status-Enable-4532 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4532 10 }
+
+discharge-Over-Current-Protection-4532 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4532 20 }
+
+discharge-Over-Current-Protection-Treshold-4532 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "A"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4532 30 }
+
+discharge-Over-Current-Protection-Delay-Time-4532 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4532 40 }
+
+discharge-Over-Current-Protection-Delay-Time-Treshold-4532 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "ms"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4532 50 }
+
+
+code-4534 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 80 } 
+ 
+short-Circuit-Protection-Delay-Time-4534 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "uS"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4534 10 }
+ 
+
+code-4235 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 90 } 
+
+cell-Balance-Treshold-4235 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4235 10 }
+ 
+delta-Vcell-4235 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4235 20 }
+
+
+code-4138 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 100 } 
+ 
+cell-Sleep-Voltage-4138 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4138 10 }
+ 
+delay-Time-4138 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "minute"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4138 20 }
+
+
+code-4145 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 110 }
+ 
+fully-Charge-Voltage-4145 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "V"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4145 10 }
+ 
+fully-Charge-CutOff-Current-4145 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "mAH"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4145 20 }
+
+soc-Low-Alarm-4145 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "%"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4145 30 }
+
+
+code-4443 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 120 }
+
+status-Enable-4443 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 10 }
+
+charger-Over-Temperature-Alarm-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 20 }
+
+charge-Over-Temperature-Alarm-Treshold-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 30 }
+
+charge-Over-Temperature-Protection-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 40 }
+
+charge-Over-Temperature-Protection-Treshold-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 50 }
+
+charge-Over-Temperature-Protection-Release-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 60 }
+
+charge-Over-Temperature-Protection-Release-Treshold-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 70 }
+
+discharger-Over-Temperature-Alarm-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 80 }
+
+discharge-Over-Temperature-Alarm-Treshold-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 90 }
+
+discharge-Over-Temperature-Protection-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 100 }
+
+discharge-Over-Temperature-Protection-Treshold-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 110 }
+
+discharge-Over-Temperature-Protection-Release-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 120 }
+
+discharge-Over-Temperature-Protection-Release-Treshold-4443 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4443 130 }
+
+ 
+code-4445 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 130 }
+ 
+status-Enable-4445 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 10 }
+
+charger-Under-Temperature-Alarm-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 20 }
+
+charge-Under-Temperature-Alarm-Treshold-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 30 }
+
+charge-Under-Temperature-Protection-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 40 }
+
+charge-Under-Temperature-Protection-Treshold-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 50 }
+
+charge-Under-Temperature-Protection-Release-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 60 }
+
+charge-Under-Temperature-Protection-Release-Treshold-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 70 }
+
+discharger-Under-Temperature-Alarm-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 80 }
+
+discharge-Under-Temperature-Alarm-Treshold-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 90 }
+
+discharge-Under-Temperature-Protection-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 100 }
+
+discharge-Under-Temperature-Protection-Treshold-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 110 }
+
+discharge-Under-Temperature-Protection-Release-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 120 }
+
+discharge-Under-Temperature-Protection-Release-Treshold-4445 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4445 130 }
+
+
+code-4530 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 140 }
+
+status-Enable-4530 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4530 10 }
+
+mosfet-Over-Temperature-Alarm-4530 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4530 20 }
+
+mosfet-Over-Temperature-Alarm-Treshold-4530 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4530 30 }
+
+mosfet-Over-Temperature-Protection-4530 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4530 40 }
+
+mosfet-Over-Temperature-Protection-Treshold-4530 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4530 50 }
+
+mosfet-Over-Temperature-Protection-Release-4530 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4530 60 }
+
+mosfet-Over-Temperature-Protection-Release-Treshold-4530 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4530 70 }
+ 
+
+code-4536 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { setting 150 }
+
+status-Enable-4536 OBJECT-TYPE
+  SYNTAX Boolean
+  UNITS ""
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 10 }
+
+environment-Under-Temperature-Alarm-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 20 }
+
+environment-Under-Temperature-Alarm-Treshold-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 30 }
+
+environment-Under-Temperature-Protection-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 40 }
+
+environment-Under-Temperature-Protection-Treshold-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 50 }
+
+environment-Under-Temperature-Protection-Release-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 60 }
+
+environment-Under-Temperature-Protection-Release-Treshold-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 70 } 
+ 
+environment-Over-Temperature-Alarm-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 80 }
+
+environment-Over-Temperature-Alarm-Treshold-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 90 }
+
+environment-Over-Temperature-Protection-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 100 }
+
+environment-Over-Temperature-Protection-Treshold-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 110 }
+
+environment-Over-Temperature-Protection-Release-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 120 }
+
+environment-Over-Temperature-Protection-Release-Treshold-4536 OBJECT-TYPE
+  SYNTAX INTEGER
+  UNITS "C"
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION ""
+::= { code-4536 130 } 
+ 
+
+-- alarms 
+alarms OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns-Objects 60 }
+
+summary-Alarm-Critical OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 10 }
+ 
+summary-Alarm-Major OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 20 }
+
+summary-Alarm-Minor OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 30 }
+
+summary-Alarm-Warning OBJECT-TYPE
+  SYNTAX Unsigned8
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 40 }
+
+alarm-Table OBJECT-TYPE
+  SYNTAX SEQUENCE OF Alarm-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+::= { alarms 50 }
+
+alarm-Entry OBJECT-TYPE
+  SYNTAX Alarm-Entry
+  MAX-ACCESS not-accessible
+  STATUS current
+  DESCRIPTION ""
+  INDEX  { alarm-Index }
+::= { alarm-Table 1 }
+
+Alarm-Entry ::= SEQUENCE {
+  alarm-Index System-Alarm,
+  alarm-Severity Alarm-Severity,
+  alarm-State Alarm-Active-State
+}
+
+alarm-Index OBJECT-TYPE
+  SYNTAX System-Alarm
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "Refer to System Alarm"
+::= { alarm-Entry 10 }
+
+alarm-Severity OBJECT-TYPE
+  SYNTAX Alarm-Severity
+  MAX-ACCESS read-write
+  STATUS current
+  DESCRIPTION "The severity level associated with the alarm. Control alarms are not displayed, although any configured digital outputs are still activated."
+  DEFVAL { major }
+::= { alarm-Entry 20 }
+
+alarm-State OBJECT-TYPE
+  SYNTAX Alarm-Active-State
+  MAX-ACCESS read-only
+  STATUS current
+  DESCRIPTION "The state of this alarm."
+::= { alarm-Entry 30 }
+
+-- end of alarms
+
+
+
+-- traps object
+ns-Traps OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION ""
+ ::= { ns 20 }
+
+global-Traps NOTIFICATION-TYPE
+  OBJECTS {alarm-Index, alarm-Severity, alarm-State }
+  STATUS current
+  DESCRIPTION "An alarm has changed state."
+::= { ns-Traps 1000 }
+
+END
