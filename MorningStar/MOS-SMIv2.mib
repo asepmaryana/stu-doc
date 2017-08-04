@@ -517,7 +517,7 @@ analog-Input3 OBJECT-TYPE
 ::= { analog-Input 30 }
 
 
--- charge controller
+-- charge controller1
 charge-Controller OBJECT-IDENTITY
   STATUS current
   DESCRIPTION ""
@@ -611,6 +611,99 @@ low-Batt-Voltage-Treshold OBJECT-TYPE
   DESCRIPTION "Treshold of low battery voltage"
 ::= { charge-Controller 110 }
 
+-- charge controller2
+charge-Controller-2 OBJECT-IDENTITY
+  STATUS current
+  DESCRIPTION "CC 2"
+::= { mos-Objects 70 }
+
+pv-Voltage-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "V"
+  DESCRIPTION "Photo voltage 2"
+::= { charge-Controller-2 10 }
+
+pv-Current-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "A"
+  DESCRIPTION "Photo current 2"
+::= { charge-Controller-2 20 }
+
+batt-Voltage-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "V"
+  DESCRIPTION "Battery voltage 2"
+::= { charge-Controller-2 30 }
+
+batt-Current-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "A"
+  DESCRIPTION "Photo current 2"
+::= { charge-Controller-2 40 }
+
+rts-Temperature-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "C"
+  DESCRIPTION "RTS temperature 2"
+::= { charge-Controller-2 50 }
+
+charging-State-2 OBJECT-TYPE
+  SYNTAX INTEGER { charge(1), discharge(0) }
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS ""
+  DESCRIPTION "Charging status 2"
+::= { charge-Controller-2 60 }
+
+ah-Charge-Total-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "AH"
+  DESCRIPTION "Ampere hour total of charge 2"
+::= { charge-Controller-2 70 }
+
+kwhr-Charge-Total-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS ""
+  DESCRIPTION "kWhr total of charge 2"
+::= { charge-Controller-2 80 }
+
+input-Power-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "Watt"
+  DESCRIPTION "Power input 2"
+::= { charge-Controller-2 90 }
+
+output-Power-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-only
+  STATUS current
+  UNITS "Watt"
+  DESCRIPTION "Power output 2"
+::= { charge-Controller-2 100 }
+
+low-Batt-Voltage-Treshold-2 OBJECT-TYPE
+  SYNTAX INTEGER
+  MAX-ACCESS read-write
+  STATUS current
+  UNITS "Watt"
+  DESCRIPTION "Treshold of low battery voltage 2"
+::= { charge-Controller-2 110 }
 
 -- traps
 mos-Traps OBJECT-IDENTITY
@@ -641,5 +734,17 @@ low-Batt-Inactive-Traps NOTIFICATION-TYPE
   STATUS current
   DESCRIPTION ""
 ::= { mos-Traps 4000 }
+
+low-Batt-2-Active-Traps NOTIFICATION-TYPE
+  OBJECTS { batt-Voltage-2, low-Batt-Voltage-Treshold-2 }
+  STATUS current
+  DESCRIPTION ""
+::= { mos-Traps 5000 }
+
+low-Batt-2-Inactive-Traps NOTIFICATION-TYPE
+  OBJECTS { batt-Voltage-2, low-Batt-Voltage-Treshold-2 }
+  STATUS current
+  DESCRIPTION ""
+::= { mos-Traps 6000 }
 
 END
